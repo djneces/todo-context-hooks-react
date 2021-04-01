@@ -7,14 +7,18 @@ const defaultTodos = [
 ];
 
 export const TodosContext = createContext();
+export const DispatchContext = createContext();
 
 export function TodosProvider(props) {
   const [todos, dispatch] = useReducer(todoReducer, defaultTodos);
 
   return (
-    //context
-    <TodosContext.Provider value={{ todos, dispatch }}>
-      {props.children}
+    //context split in 2, one for only todos, one for dispatch actions (add, toggle....), so we avoid unnecessary rendering
+    //we DONT PASS  value={{todos}} -> only the actual value {todos} and {dispatch}, => we don't create new object each time -> re-rendering
+    <TodosContext.Provider value={todos}>
+      <DispatchContext.Provider value={dispatch}>
+        {props.children}
+      </DispatchContext.Provider>
     </TodosContext.Provider>
   );
 }
